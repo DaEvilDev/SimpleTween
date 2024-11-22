@@ -4,7 +4,7 @@
 	@author TheEvilDeveloper
 	@author https://github.com/DaEvilDev
 	@author https://www.roblox.com/users/1668387468/profile
-	@version 1.1
+	@version 1.0
 	@created 2022/09/23
 	@updated 2024/11/23
 ]]
