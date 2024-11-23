@@ -9,7 +9,6 @@ A simple Roblox module specifically designed to enhance the experience of using 
 `SimpleTween` takes Roblox's TweenService to the next level, offering:
 - **Easy Management:** Automatically handles creation, cleanup, and control of tweens.
 - **Batch Tweens:** Simplifies tweening multiple objects at once with a single call.
-- **Custom TweenInfo Support:** Allows more control over tween behavior with custom easing styles and durations.
 - **GUI Support:** Includes specialized functions for tweening GUI object sizes and positions.
 - **Callback Integration:** Supports custom callback functions that execute when tweens finish naturally.
 
@@ -87,6 +86,29 @@ Call this function to continue paused tweens.
 ### `SimpleTween:GuiPosition(object: GuiObject, position: UDim2, duration: number, callback: (any)?)`
 **Tweens the position of a GUI object.**  
 - **Parameters:** Same as `GuiSize`, but for the object's position.
+
+---
+
+### `SimpleTween:GuiButton(guiButton: GuiButton, callback: (any)?)`  
+**Adds a visual effect to a GUI button when clicked.**  
+- **Parameters:**  
+  - `guiButton`: The GUI button to animate.  
+  - `callback`: (Optional) Function executed after the animation finishes.  
+- **Behavior:**  
+  - Temporarily disables the button during the animation to prevent spamming.  
+  - If the button contains a child named `Content` (e.g., for inner decorations), the animation applies to it instead of the button.  
+- **Returns:** Nothing.  
+
+```lua
+local SimpleTween = require(script.SimpleTween)
+local tweenController = SimpleTween.new()
+
+local button = script.Parent.Button
+
+tweenController:GuiButton(button, function()
+    print("Button click animation complete!")
+end)
+```
 
 ---
 
