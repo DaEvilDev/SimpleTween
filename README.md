@@ -99,21 +99,6 @@ Call this function to continue paused tweens.
   - If the button contains a child named `Content` (e.g., for inner decorations), the animation applies to it instead of the button.  
 - **Returns:** Nothing.  
 
-```lua
-local SimpleTween = require(script.SimpleTween)
-local tweenController = SimpleTween.new()
-
-local button = script.Parent.Button
-
-button.Activated:Connect(function()
-  print("Button was clicked!")
-
-  tweenController:GuiButton(button, function()
-      print("Button click animation complete!") 
-  end)
-end)
-```
-
 ---
 
 ## **Custom TweenInfo Functions**
@@ -184,6 +169,21 @@ local button = script.Parent.Button -- A GUI button
 -- Tween the button's size
 tweenController:GuiSize(button, UDim2.new(0.5, 0, 0.5, 0), 1, function()
     print("Button size tween complete!")
+end)
+```
+
+```lua
+local SimpleTween = require(script.SimpleTween)
+local tweenController = SimpleTween.new()
+
+local button = script.Parent.Button
+
+button.Activated:Connect(function()
+  print("Button was clicked!")
+
+  tweenController:GuiButton(button, function()
+      print("Button click animation complete!") 
+  end)
 end)
 ```
 
