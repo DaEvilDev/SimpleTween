@@ -105,8 +105,12 @@ local tweenController = SimpleTween.new()
 
 local button = script.Parent.Button
 
-tweenController:GuiButton(button, function()
-    print("Button click animation complete!")
+button.Activated:Connect(function()
+  print("Button was clicked!")
+
+  tweenController:GuiButton(button, function()
+      print("Button click animation complete!") 
+  end)
 end)
 ```
 
