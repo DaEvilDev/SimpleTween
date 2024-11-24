@@ -4,9 +4,9 @@
 	@author TheEvilDeveloper
 	@author https://github.com/DaEvilDev
 	@author https://www.roblox.com/users/1668387468/profile
-	@version 1.0
+	@version 1.01
 	@created 2022/09/23
-	@updated 2024/11/23
+	@updated 2024/11/24
 ]]
 
 local SimpleTween = {}
@@ -66,12 +66,13 @@ local function createTween(self, instance: Instance, tweenInfo: TweenInfo, prope
 
 	tween.Completed:Once(function(playbackState: Enum.PlaybackState)
 		local index = table.find(self.tweens, tween)
+		
 		if index then
 			table.remove(self.tweens, index)
 			tween:Destroy()
 		end
 
-		if playbackState == Enum.PlaybackState.Cancelled then return end
+		if self.callbackExceptions[playbackState] then return end
 		
 		if typeof(callback) == "function" then
 			callback()
@@ -162,7 +163,7 @@ function SimpleTween:MultipleTween(instances: {Instance}, propertyTable: {[strin
 	for _, instance: Instance in pairs(instances) do
 		local getCallback: (any)? = callbackHooked == false and callback or nil
 		callbackHooked = true
-
+		
 		local tween = createTween(self, instance, getBaseTweenInfo(duration), propertyTable, getCallback)
 		table.insert(tweens, tween)
 	end
@@ -238,7 +239,7 @@ function SimpleTween:GuiSize(object: GuiObject, size: UDim2, duration: number, c
 end
 
 --[[
-<p><strong>GuiButton:</strong> Adds a visual shrinking effect to a GUI button when clicked.</p>
+<p><strong>GuiButton:</strong> Adds a visual effect to a GUI button.</p>
 <em>Parameters:</em>
 <code>guiButton</code>: The GUI button to animate.
 <code>callback</code>: (Optional) Function executed after the animation finishes.
@@ -256,6 +257,10 @@ function SimpleTween:GuiButton(button: GuiButton, callback: (any)?): nil
 	createTween(self, content, getButtonTweenInfo(0.125), {Size = UDim2.fromScale(size.X.Scale / 1.2, size.Y.Scale / 1.2)}, function()
 		createTween(self, content, getButtonTweenInfo(0.125), {Size = size}, function()
 			button.Active = true
+			
+			if typeof(callback) == "function" then
+				callback()
+			end
 		end)
 	end)
 end
@@ -291,15 +296,28 @@ end
 --[[ 
 <p><strong>new:</strong> Creates a new SimpleTween object to manage tweens.</p>
 <em>Parameters:</em>
-<code>None</code>
+<code>callbackExceptions</code> (Optional): A table containing <code>Enum.PlaybackState</code> values as keys and boolean values as their corresponding exceptions. 
+This parameter determines which playback states will prevent callback execution.</p>
+<em>Default Value:</em>
+If <code>callbackExceptions</code> is not provided, the default is <code>{[Enum.PlaybackState.Cancelled] = true}</code>, which prevents the callback from executing when the tween is cancelled.
+<em>Formatting:</em>
+The <code>callbackExceptions</code> parameter must be formatted as a dictionary-like table with <code>Enum.PlaybackState</code> values as keys and <code>boolean</code> values as their respective exceptions.
+<code>Example:
+{
+    [Enum.PlaybackState.Completed] = false, -- Allows callbacks for completed tweens.
+    [Enum.PlaybackState.Cancelled] = true, -- Prevents callbacks for cancelled tweens.
+}</code>
+<em>Note:</em>
+If the <code>callbackExceptions</code> parameter is not a valid table with at least one entry, the default exceptions are used.
 <em>Returns:</em>
 <code>SimpleTween</code>: A new instance of the SimpleTween class.
 ]]
-function SimpleTween.new()
+function SimpleTween.new(callbackExceptions: {[Enum.PlaybackState]: boolean}?)
 	local self = setmetatable({}, SimpleTween)
 	
 	self.tweens = {}
-		
+	self.callbackExceptions = (typeof(callbackExceptions) == "table" and #callbackExceptions > 1) and callbackExceptions or {[Enum.PlaybackState.Cancelled] = true}
+	
 	return self
 end
 
