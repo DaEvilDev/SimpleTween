@@ -12,17 +12,51 @@ A simple Roblox module specifically designed to enhance the experience of using 
 - **GUI Support:** Includes specialized functions for tweening GUI object sizes and positions.
 - **Callback Integration:** Supports custom callback functions that execute when tweens finish naturally.
 
+Here’s the updated documentation and example for your `SimpleTween.new` constructor:
+
 ---
 
 ## **Constructor**
 
-### `SimpleTween.new()`
-**Creates a new `SimpleTween` object to manage tweens.**  
-- **Returns:** A `SimpleTween` instance.
+### `SimpleTween.new(callbackExceptions?)`
+**Creates a new `SimpleTween` object to manage tweens.**
 
+#### **Parameters:**
+- **`callbackExceptions`** *(Optional)*:  
+  A dictionary-like table with `Enum.PlaybackState` values as keys and boolean values indicating whether callbacks should be prevented for specific states.  
+  - **Default Value:**  
+    If not provided or invalid, it defaults to:  
+    ```lua
+    {[Enum.PlaybackState.Cancelled] = true}
+    ```
+    This prevents callbacks from being executed when the tween is cancelled.
+
+  - **Formatting:**  
+    Must be a table with `Enum.PlaybackState` as keys and `boolean` as values. Examples:  
+    ```lua
+    {
+        [Enum.PlaybackState.Completed] = false, -- Allows callbacks for completed tweens.
+        [Enum.PlaybackState.Cancelled] = true, -- Prevents callbacks for cancelled tweens.
+    }
+    ```
+
+  - **Note:**  
+    If the table has fewer than one valid entry or is not a table, the default value is used.
+
+#### **Returns:**
+A new instance of the `SimpleTween` class.
+
+---
+
+### **Example**
 ```lua
 local SimpleTween = require(script.SimpleTween)
-local tweenController = SimpleTween.new()
+
+local callbackExceptions = {
+    [Enum.PlaybackState.Cancelled] = true, -- Prevent callbacks for cancelled tweens
+}
+
+local tweenController = SimpleTween.new(callbackExceptions)
 ```
 
 ---
